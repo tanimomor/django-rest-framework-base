@@ -17,3 +17,8 @@ class Snippet(models.Model):
 
     class Meta:
         ordering = ['created']
+
+
+class Test(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    snippet = models.ForeignKey(Snippet, on_delete=models.SET_NULL, null=True)
