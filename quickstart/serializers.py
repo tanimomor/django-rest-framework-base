@@ -1,13 +1,16 @@
 from django.contrib.auth.models import Group, User
 from rest_framework import serializers
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = User
-        fields = ['url', 'username', 'email', 'groups']
+from quickstart.models import Order, OrderItem
 
 
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
+class OrderSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Group
-        fields = ['url', 'name']
+        model = Order
+        fields = '__all__'
+
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItem
+        fields = '__all__'

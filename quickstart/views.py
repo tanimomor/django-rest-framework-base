@@ -1,22 +1,37 @@
 from django.contrib.auth.models import Group, User
-from rest_framework import permissions, viewsets
+from rest_framework import permissions, viewsets, status, response
+from rest_framework.generics import ListAPIView, CreateAPIView, GenericAPIView
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from .serializers import GroupSerializer, UserSerializer
-
-
-class UserViewSet(viewsets.ModelViewSet):
-    """
-        API endpoint that allows users to be viewed or edited.
-    """
-    queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+from quickstart.models import Order
+from quickstart.serializers import OrderSerializer
 
 
-class GroupViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
-    queryset = Group.objects.all().order_by('name')
-    serializer_class = GroupSerializer
-    permission_classes = [permissions.IsAuthenticated]
+class OrderList(ListAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+
+class OrderCreate(CreateAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = OrderSerializer(data=request.data)
+        print('----------------------------------------------data', request.data['items'])
+        if serializer.is_valid():
+            serializer.save()
+            return response.Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class OrderDetail(APIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+
+
+
+
